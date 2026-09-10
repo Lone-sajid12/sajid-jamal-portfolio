@@ -1,82 +1,116 @@
 # Sajid Jamal — Portfolio
 
-**SAJID JAMAL — DATA → INTELLIGENCE**
-Turning data into better decisions.
+> Personal portfolio of Sajid Jamal — a BCA student building toward Data Science, AI/ML, and intelligent automation.
 
-An editorial, image-led portfolio for a Computer science student working from Data Analytics → Data Science → AI/ML → Automation.
-Built with React 19, Vite, Tailwind CSS v4, Framer Motion and Lenis smooth scrolling.
+## About
 
----
+This portfolio showcases my journey from data analysis toward data science, machine learning, artificial intelligence, and automation.
 
-## Quick start
+I am interested in turning raw data into meaningful insights, building predictive models, and creating intelligent workflows that solve practical problems.
 
-```bash
-npm install
-npm run dev     # dev server
-npm run build   # single-file production build → dist/index.html
-```
+The website is designed to combine a clean editorial visual style with modern web development, animation, and interactive experiences.
 
-## Routes
+## Focus
 
-The site builds to one static `index.html`, so routing is hash-based and every deep link works on any host
-(including opening the file directly).
+- Data Analysis
+- Data Science
+- Python
+- SQL
+- Machine Learning
+- Artificial Intelligence
+- Automation
+- Data Visualization
+- Practical Projects
+- Continuous Learning
 
-| Page | Route |
-| --- | --- |
-| Home | `#/` |
-| About | `#/about` |
-| Projects archive | `#/projects` |
-| Project case study | `#/projects/<slug>` |
-| Certifications | `#/certifications` |
-| Journey | `#/journey` |
-| Contact | `#/contact` |
+## Portfolio Sections
 
-## Files you may want to drop in
+### Home
+An introduction to who I am, what I am working toward, and my approach to data and technology.
 
-| What | Where | Notes |
-| --- | --- | --- |
-| Your portrait | `public/mypic.png` | Replace the bundled placeholder photo. If the file is missing, a monogram panel renders instead of a broken image — the arch crop, slow zoom, cursor depth and reveal all still work. |
-| Static resume (optional) | `public/resume.pdf` | **Download Resume** already generates a real PDF in the browser with jsPDF (desktop + mobile, no network). Adding this file gives you a static copy to share directly. |
-| Resume content | `src/lib/resume.ts` | The generator reads `src/lib/data.ts`, so the PDF and the site never disagree. |
+### About
+A deeper look at my background, education, interests, and journey into Data Science and AI.
 
-## Connect the contact form
+### Projects
+Selected projects covering data analysis, machine learning, automation, and practical problem solving.
 
-`src/components/ContactSection.tsx` starts with `const FORM_ENDPOINT = "";`. Paste any POST endpoint
-(Formspree, Resend, a serverless function, an n8n webhook) and the form submits to it. While it is empty the form
-never pretends to send: it validates (name / email format / message length + honeypot) and offers a pre-filled
-email instead.
+### Certifications
+A collection of certifications, training, and learning experiences.
 
-## Visual direction
+### Journey
+A timeline documenting my progression and continuous learning in technology and data.
 
-- **Palette:** warm bone `#F4F1EA`, soft black `#111111`, charcoal `#242424`, warm gray `#8A877F`, with one
-  restrained accent family — deep olive `#5A6146` and muted bronze `#9A7B4F`. Predominantly light, with a single
-  dark block for the resume + contact finale.
-- **Typography:** Fraunces (variable serif, including the italic "wonk" axis for accent words) as the display face,
-  Inter Tight for long-form text, JetBrains Mono for metadata labels set in wide-tracked uppercase.
-- **Motifs:** hairline rules instead of cards, full-bleed images, oversized display type, film grain, numbered
-  section labels, row-hover inversions, magnetic buttons, scroll-driven word reveals, clip-path image reveals and
-  slow parallax. No glow, no glassmorphism, no neon.
-- **3D is felt, not shown:** cursor-driven depth on the portrait, scroll parallax on image planes, layered
-  typography and perspective transforms — instead of rotating WebGL objects.
-- **Motion:** Lenis smooth scroll, Framer Motion page transitions (clip + fade), typographic curtain intro,
-  line-by-line type reveals, scroll-drawn journey and pipeline sequences.
+### Data → Intelligence
 
-## Content integrity rules followed by this site
+A visual representation of the journey from:
 
-- No invented work experience, clients, job titles, business impact, user counts, ML accuracy or awards.
-- No fabricated certificate IDs, grades, dates or verification links — missing data is labelled as pending.
-- Skills are plain text labelled `confident` / `building` / `exploring`; nothing is scored by a fake percentage bar.
-- GitHub data is fetched live from `api.github.com`; if unavailable, a plain profile link is shown instead of
-  invented statistics.
-- Projects are labelled learning builds with stated limitations in each case study
-  (Problem · Data · Process · Technology · Result · What I learned).
+`RAW DATA → CLEAN → EXPLORE → VISUALIZE → MODEL → PREDICT → AUTOMATE → IMPACT`
 
-## Performance & accessibility
+### Contact
+Ways to connect with me professionally.
 
-- `prefers-reduced-motion` disables Lenis, grain animation, marquee and all reveals.
-- Touch devices skip cursor effects; images are lazy-loaded with `decoding="async"`.
-- Animations are limited to transform / opacity / clip-path for GPU-friendly rendering.
+## Tech Stack
 
----
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Modern CSS
+- Responsive Web Design
+- Git & GitHub
 
-© 2026 Sajid Jamal. Built with curiosity and code.
+## Design Philosophy
+
+The portfolio follows an editorial and cinematic design direction rather than a traditional SaaS/dashboard style.
+
+The goal is to keep the interface:
+
+- Minimal
+- Professional
+- Visual
+- Typography-driven
+- Human
+- Technical
+- Responsive
+- Motion-focused
+
+Animations and interactions are used to enhance the experience without overwhelming the content.
+
+## Project Structure
+
+```text
+src/
+├── components/
+│   ├── Backdrop.tsx
+│   ├── ContactSection.tsx
+│   ├── Footer.tsx
+│   ├── GitHubPanel.tsx
+│   ├── Hero.tsx
+│   ├── JourneyTimeline.tsx
+│   ├── Nav.tsx
+│   ├── Pipeline.tsx
+│   ├── Portrait.tsx
+│   ├── sections.tsx
+│   └── ui.tsx
+│
+├── lib/
+│   ├── data.ts
+│   ├── hooks.ts
+│   └── resume.ts
+│
+├── pages/
+│   ├── About.tsx
+│   ├── Certifications.tsx
+│   ├── Contact.tsx
+│   ├── Home.tsx
+│   ├── Journey.tsx
+│   ├── NotFound.tsx
+│   ├── ProjectCaseStudy.tsx
+│   └── Projects.tsx
+│
+├── utils/
+│   └── cn.ts
+│
+├── App.tsx
+├── index.css
+└── main.tsx
