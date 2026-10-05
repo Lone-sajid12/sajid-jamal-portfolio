@@ -1,244 +1,766 @@
 import { jsPDF } from "jspdf";
-import { certifications, profile, projects, skillCategories } from "./data";
 
-/**
- * Builds the resume as a real PDF at runtime, so "Download Resume" works on
- * desktop and mobile with no network call and no missing file. Content is read
- * from the same honest data source the website uses.
- * (You can also drop a static copy at public/resume.pdf — see README.md.)
- */
 function buildResumeDoc() {
-  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const doc = new jsPDF({
+    unit: "mm",
+    format: "a4",
+  });
+
   const pageW = 210;
   const pageH = 297;
-  const margin = 16;
+
+  const margin = 12;
   const contentW = pageW - margin * 2;
 
-  const ink: [number, number, number] = [17, 17, 17];
-  const muted: [number, number, number] = [138, 135, 127];
-  const olive: [number, number, number] = [90, 97, 70];
+  const navy: [number, number, number] = [30, 43, 60];
+  const text: [number, number, number] = [55, 60, 66];
+  const muted: [number, number, number] = [105, 110, 116];
+  const line: [number, number, number] = [215, 218, 221];
 
-  let y = 0;
+  let y = 17;
 
-  // ── masthead ──
-  doc.setFillColor(244, 241, 234);
-  doc.rect(0, 0, pageW, 40, "F");
-  doc.setDrawColor(...ink);
-  doc.setLineWidth(0.6);
-  doc.line(margin, 39, pageW - margin, 39);
+  // =========================================================
+  // HEADER
+  // =========================================================
 
-  doc.setTextColor(...ink);
-  doc.setFont("times", "bold");
-  doc.setFontSize(25);
-  doc.text(profile.name, margin, 19);
+  doc.setTextColor(...navy);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(24);
+
+  doc.text("SAJID JAMAL", margin, y);
+
+  y += 7;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8.5);
+  doc.setTextColor(...navy);
+
+  doc.text(
+    "DATA ANALYTICS  |  DATA SCIENCE  |  AI / ML",
+    margin,
+    y
+  );
+
+  y += 5;
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(9.6);
-  doc.setTextColor(...olive);
-  doc.text("DATA ANALYTICS  →  DATA SCIENCE  →  AI / ML  →  AUTOMATION", margin, 26.5);
-
+  doc.setFontSize(7.2);
   doc.setTextColor(...muted);
-  doc.setFontSize(9);
-  doc.text(`${profile.location}   |   ${profile.email}`, margin, 32.5);
-  doc.text(`github.com/${profile.githubHandle}   |   linkedin.com/in/sajid-jamal-130462380`, margin, 36.8);
 
-  y = 50;
+  doc.text(
+    "sajidjamal212@gmail.com  ·  www.linkedin.com/in/sajid-jamal-130462380  ·  www.github.com/Lone-sajid12  ·  Srinagar, Jammu & Kashmir, India",
+    margin,
+    y
+  );
 
-  const heading = (text: string) => {
-    if (y > pageH - 30) {
-      doc.addPage();
-      y = 22;
-    }
+  y += 4;
+
+  doc.setDrawColor(...navy);
+  doc.setLineWidth(0.6);
+  doc.line(margin, y, pageW - margin, y);
+
+  y += 7;
+
+  // =========================================================
+  // SECTION HEADING
+  // =========================================================
+
+  const heading = (title: string) => {
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(9.4);
-    doc.setTextColor(...olive);
-    doc.text(text.toUpperCase(), margin, y);
-    doc.setDrawColor(214, 208, 196);
-    doc.setLineWidth(0.3);
-    doc.line(margin, y + 1.6, pageW - margin, y + 1.6);
-    y += 7;
+    doc.setFontSize(8.2);
+    doc.setTextColor(...navy);
+    doc.text(title.toUpperCase(), margin, y);
+
+    y += 2.5;
+
+    doc.setDrawColor(...line);
+    doc.setLineWidth(0.25);
+    doc.line(margin, y, pageW - margin, y);
+
+    y += 5;
   };
 
-  const body = (text: string, size = 9.2, color: [number, number, number] = ink, gap = 1.5) => {
+  // =========================================================
+  // BODY TEXT
+  // =========================================================
+
+  const body = (
+    value: string,
+    fontSize = 8.2,
+    color: [number, number, number] = text
+  ) => {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(fontSize);
+    doc.setTextColor(...color);
+
+    const lines = doc.splitTextToSize(value, contentW);
+
+    lines.forEach((lineText: string) => {
+      doc.text(lineText, margin, y);
+      y += 3.7;
+    });
+
+    y += 1.5;
+  };
+
+  // =========================================================
+  // BULLET
+  // =========================================================
+
+  const bullet = (value: string, size = 7.9) => {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(size);
-    doc.setTextColor(...color);
-    const lines = doc.splitTextToSize(text, contentW);
-    lines.forEach((line: string) => {
-      if (y > pageH - 18) {
-        doc.addPage();
-        y = 22;
-      }
-      doc.text(line, margin, y);
-      y += 4.4;
-    });
-    y += gap;
-  };
+    doc.setTextColor(...text);
 
-  const bullet = (text: string) => {
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9.2);
-    const lines = doc.splitTextToSize(text, contentW - 5);
-    lines.forEach((line: string, index: number) => {
-      if (y > pageH - 18) {
-        doc.addPage();
-        y = 22;
-      }
+    const bulletWidth = 4;
+    const lines = doc.splitTextToSize(
+      value,
+      contentW - bulletWidth
+    );
+
+    lines.forEach((lineText: string, index: number) => {
       if (index === 0) {
-        doc.setTextColor(...olive);
-        doc.text("•", margin + 0.6, y);
+        doc.text("•", margin, y);
       }
-      doc.setTextColor(...ink);
-      doc.text(line, margin + 5, y);
-      y += 4.4;
+
+      doc.text(lineText, margin + bulletWidth, y);
+      y += 3.6;
     });
   };
 
-  heading("Profile");
+  // =========================================================
+  // PROFESSIONAL SUMMARY
+  // =========================================================
+
+  heading("Professional Summary");
+
   body(
-    "Computer science student and aspiring Data Scientist building a career path from Data Analytics into Data Science, AI/ML and Automation. Works with Python, SQL, Pandas and visualization tools to clean, explore and explain data, and turns what I learn into documented learning builds. Open to internships, hackathons and open-source collaboration as a student learner."
+    "Computer Science student currently focused on Data Analytics and working toward a career in Data Science. Hands-on experience with Python, Pandas, NumPy, data cleaning and exploratory data analysis through practical projects. Currently developing skills in SQL, statistics and machine learning, with experience using AI-assisted coding for development and debugging.",
+    8.1
   );
 
-  heading("Education");
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
-  doc.setTextColor(...ink);
-  doc.text(profile.education.degree, margin, y);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9.2);
-  doc.setTextColor(...muted);
-  doc.text(profile.education.years, pageW - margin, y, { align: "right" });
-  y += 5;
-  body(
-    `${profile.education.institute} — ${profile.education.place}. ${profile.education.status}.`,
-    9.2,
-    muted
-  );
+  y += 1;
 
-  heading("Career Direction");
-  bullet("Data Analytics — cleaning, SQL, exploratory analysis, visualization and clear written findings.");
-  bullet("Data Science — statistics, EDA, feature engineering and predictive modelling grounded in validation.");
-  bullet("AI / ML — machine learning fundamentals, model building, evaluation and LLM concepts.");
-  bullet("Automation — Python automation and AI-assisted workflows that remove repetitive work.");
-  y += 2;
+  // =========================================================
+  // SKILLS
+  // =========================================================
 
   heading("Skills");
-  skillCategories.forEach((group) => {
+
+  const skillRows = [
+    {
+      leftTitle: "Programming:",
+      left:
+        "Python, JavaScript, C Programming",
+      rightTitle: "Data Analytics:",
+      right:
+        "Pandas, NumPy, Data Cleaning, Exploratory Data Analysis, Data Analysis, Data Interpretation, Data Visualization",
+    },
+    {
+      leftTitle: "SQL & Database:",
+      left:
+        "SQL (Learning)",
+      rightTitle: "Machine Learning:",
+      right:
+        "scikit-learn, Machine Learning (Learning)",
+    },
+    {
+      leftTitle: "Tools:",
+      left:
+        "Git, GitHub, Vercel, VS Code",
+      rightTitle: "Development (AI-Assisted):",
+      right:
+        "React, Next.js, Vite, Tailwind CSS, FastAPI, APIs",
+    },
+    {
+      leftTitle: "Practical Skills:",
+      left:
+        "Debugging & Troubleshooting, Problem Solving, Technical Communication",
+      rightTitle: "AI & Development:",
+      right:
+        "AI-assisted coding, Prompt Engineering, AI Tools for Software Development, AI Automation (Learning), AI Agent Concepts (Learning)",
+    },
+  ];
+
+  const colGap = 8;
+  const colW = (contentW - colGap) / 2;
+
+  skillRows.forEach((row) => {
+    const startY = y;
+
+    // Left column
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(9.2);
-    doc.setTextColor(...ink);
-    const label = `${group.category}: `;
-    doc.text(label, margin, y);
-    const labelW = doc.getTextWidth(label);
+    doc.setFontSize(7.7);
+    doc.setTextColor(...text);
+
+    const leftTitleWidth = doc.getTextWidth(row.leftTitle);
+
+    doc.text(row.leftTitle, margin, y);
+
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(...muted);
-    doc.text(group.skills.map((s) => `${s.name} (${s.level.toLowerCase()})`).join(", "), margin + labelW, y, {
-      maxWidth: contentW - labelW,
-    });
-    y += 5.2;
+    doc.setTextColor(...text);
+
+    const leftLines = doc.splitTextToSize(
+      row.left,
+      colW - leftTitleWidth
+    );
+
+    if (leftLines.length > 0) {
+      doc.text(
+        leftLines[0],
+        margin + leftTitleWidth,
+        y
+      );
+
+      for (let i = 1; i < leftLines.length; i++) {
+        doc.text(leftLines[i], margin, y + i * 3.4);
+      }
+    }
+
+    // Right column
+    const rightX = margin + colW + colGap;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.7);
+    doc.setTextColor(...text);
+
+    const rightTitleWidth = doc.getTextWidth(row.rightTitle);
+
+    doc.text(row.rightTitle, rightX, startY);
+
+    doc.setFont("helvetica", "normal");
+
+    const rightLines = doc.splitTextToSize(
+      row.right,
+      colW - rightTitleWidth
+    );
+
+    if (rightLines.length > 0) {
+      doc.text(
+        rightLines[0],
+        rightX + rightTitleWidth,
+        startY
+      );
+
+      for (let i = 1; i < rightLines.length; i++) {
+        doc.text(
+          rightLines[i],
+          rightX,
+          startY + i * 3.4
+        );
+      }
+    }
+
+    const rowHeight =
+      Math.max(leftLines.length, rightLines.length) * 3.4;
+
+    y += rowHeight + 4;
   });
+
+  y += 1;
+
+  // =========================================================
+  // PROJECTS
+  // =========================================================
+
+  heading("Projects");
+
+  // Customer Churn Analytics
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8.3);
+  doc.setTextColor(...text);
+
+  doc.text("Customer Churn Analytics", margin, y);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.1);
+  doc.setTextColor(...muted);
+
+  doc.text(
+    "Python · Pandas · NumPy · Data Analysis",
+    pageW - margin,
+    y,
+    { align: "right" }
+  );
+
+  y += 4;
+
+  bullet(
+    "Cleaned and analyzed the Telco Customer Churn dataset using Python and Pandas."
+  );
+
+  bullet(
+    "Performed exploratory data analysis to understand customer churn patterns."
+  );
+
+  bullet(
+    "Analyzed churn by contract type, tenure, internet service and customer services."
+  );
+
+  bullet(
+    "Used data-driven analysis to identify differences in customer churn behavior."
+  );
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.6);
+  doc.setTextColor(...muted);
+
+  doc.text(
+    "GitHub: github.com/Lone-sajid12/customer-churn-analytics",
+    margin + 4,
+    y
+  );
+
+  y += 5.5;
+
+  // Nexora Global
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8.3);
+  doc.setTextColor(...text);
+
+  doc.text(
+    "Nexora Global — Business Website",
+    margin,
+    y
+  );
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.1);
+  doc.setTextColor(...muted);
+
+  doc.text(
+    "Website Development",
+    pageW - margin,
+    y,
+    { align: "right" }
+  );
+
+  y += 4;
+
+  bullet("Worked on a responsive business website.");
+
+  bullet(
+    "Worked on navigation, branding, mobile layout and website structure."
+  );
+
+  bullet(
+    "Used GitHub and Vercel for development and deployment."
+  );
+
+  bullet(
+    "Used AI-assisted coding and debugging during development."
+  );
+
   y += 2;
 
-  heading("Projects (honest learning builds)");
-  projects.forEach((project) => {
-    if (y > pageH - 30) {
-      doc.addPage();
-      y = 22;
-    }
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9.7);
-    doc.setTextColor(...ink);
-    doc.text(project.title, margin, y);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
-    doc.setTextColor(...olive);
-    doc.text(`${project.category} • ${project.status}`, pageW - margin, y, { align: "right" });
-    y += 4.6;
-    body(project.summary, 8.8, muted, 0.6);
-    body(`Tech: ${project.tech.join(", ")}`, 8.5, muted, 2.4);
-  });
+  // Personal Portfolio
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8.3);
+  doc.setTextColor(...text);
 
-  heading("Certifications & Training");
-  certifications.forEach((cert) => {
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9.2);
-    doc.setTextColor(...ink);
-    doc.text(`${cert.title} — ${cert.organization}`, margin, y);
-    y += 4.4;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.6);
-    doc.setTextColor(...muted);
-    doc.text(`Status: ${cert.status} • ${cert.date} • ${cert.skills.join(", ")}`, margin, y, { maxWidth: contentW });
-    y += 6;
-  });
+  doc.text(
+    "Personal Portfolio",
+    margin,
+    y
+  );
 
-  heading("Links");
-  body(profile.github, 9.2, olive, 0.5);
-  body(profile.linkedin, 9.2, olive, 0.5);
-  body(profile.email, 9.2, olive, 0.5);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.1);
+  doc.setTextColor(...muted);
 
-  const total = doc.getNumberOfPages();
-  for (let page = 1; page <= total; page += 1) {
-    doc.setPage(page);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.8);
-    doc.setTextColor(...muted);
-    doc.text(
-      `© 2026 ${profile.name} — Turning data into better decisions.   ${page}/${total}`,
-      pageW / 2,
-      pageH - 9,
-      { align: "center" }
-    );
-  }
+  doc.text(
+    "Next.js · React · Tailwind CSS",
+    pageW - margin,
+    y,
+    { align: "right" }
+  );
+
+  y += 4;
+
+  bullet("Built a personal developer portfolio.");
+
+  bullet(
+    "Added project, certification and resume sections."
+  );
+
+  bullet(
+    "Worked with Next.js, React and Tailwind CSS."
+  );
+
+  bullet(
+    "Used AI-assisted coding and debugging during development."
+  );
+
+  y += 2;
+
+  // =========================================================
+  // CERTIFICATIONS
+  // =========================================================
+
+  heading("Certifications");
+
+  bullet(
+    "Career Essentials in Data Analysis by Microsoft and LinkedIn · LinkedIn Learning · Completed September 2026"
+  );
+
+  bullet(
+    "Statistics Foundations 1: The Basics · LinkedIn Learning"
+  );
+
+  bullet(
+    "Power BI Essentials · LinkedIn Learning"
+  );
+
+  bullet(
+    "Deloitte — Data Analytics Job Simulation · Forage"
+  );
+
+  y += 2;
+
+  // =========================================================
+  // EDUCATION
+  // =========================================================
+
+  heading("Education");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8.5);
+  doc.setTextColor(...text);
+
+  doc.text(
+    "COMPUTER APPLICATIONS",
+    margin,
+    y
+  );
+
+  doc.setFontSize(7.5);
+  doc.setTextColor(...navy);
+
+  doc.text(
+    "CURRENTLY IN 2ND YEAR",
+    pageW - margin,
+    y,
+    { align: "right" }
+  );
+
+  y += 4;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.9);
+  doc.setTextColor(...text);
+
+  doc.text(
+    "Bachelor's Degree with Major in Computer Applications",
+    margin,
+    y
+  );
+
+  y += 3.8;
+
+  doc.setTextColor(...muted);
+
+  doc.text(
+    "IITM Hyderpora, Srinagar, Jammu & Kashmir",
+    margin,
+    y
+  );
+
+  y += 6;
+
+  // =========================================================
+  // CAREER FOCUS
+  // =========================================================
+
+  heading("Career Focus");
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.setTextColor(...text);
+
+  doc.text(
+    "Data Analytics  ·  Data Science  ·  Machine Learning  ·  Artificial Intelligence  ·  Data-driven problem solving",
+    margin,
+    y
+  );
+
+  // =========================================================
+  // SAVE / RETURN
+  // =========================================================
 
   return doc;
 }
 
-/** Print-ready HTML fallback if PDF generation is unavailable in the browser. */
+
+// =============================================================
+// PRINT FALLBACK
+// =============================================================
+
 function openPrintableFallback() {
-  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${profile.name} — Resume</title>
-  <style>
-    body{font-family:Georgia,'Times New Roman',serif;margin:0;padding:52px;background:#f4f1ea;color:#111;line-height:1.65}
-    .wrap{max-width:720px;margin:0 auto}
-    h1{margin:0 0 8px;font-size:34px;letter-spacing:-.02em}
-    .role{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5a6146;margin:0 0 14px}
-    .meta{font-family:ui-monospace,monospace;font-size:11px;color:#8a877f}
-    h2{margin:30px 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5a6146;border-bottom:1px solid #d6d0c4;padding-bottom:6px;font-family:ui-monospace,monospace}
-    ul{padding-left:16px;margin:6px 0;font-size:14px} li{margin:4px 0}
-    p{font-size:14.5px} .t{font-weight:700} .s{color:#8a877f;font-size:12.5px;font-family:ui-monospace,monospace}
-    .item{margin-bottom:16px}
-  </style></head><body><div class="wrap">
-  <h1>${profile.name}</h1>
-  <p class="role">Data Analytics → Data Science → AI / ML → Automation</p>
-  <p class="meta">${profile.location} &nbsp;|&nbsp; ${profile.email} &nbsp;|&nbsp; ${profile.github} &nbsp;|&nbsp; ${profile.linkedin}</p>
-  <h2>Profile</h2>
-  <p>Computer science student and aspiring Data Scientist building a career path from Data Analytics into Data Science, AI/ML and Automation. Works with Python, SQL, Pandas and visualization tools, and turns learning into documented builds. Open to internships, hackathons and open-source collaboration as a student learner.</p>
-  <h2>Education</h2>
-  <div class="item"><div class="t">${profile.education.degree}</div><div class="s">${profile.education.institute} — ${profile.education.place} • ${profile.education.years}</div></div>
-  <h2>Skills</h2>
-  ${skillCategories
-    .map(
-      (group) =>
-        `<div class="item"><div class="t">${group.category}</div><div class="s">${group.skills
-          .map((s) => `${s.name} (${s.level.toLowerCase()})`)
-          .join(" • ")}</div></div>`
-    )
-    .join("")}
-  <h2>Projects (honest learning builds)</h2>
-  ${projects
-    .map(
-      (p) =>
-        `<div class="item"><div class="t">${p.title} <span class="s">— ${p.category} • ${p.status}</span></div><div>${p.summary}</div><div class="s">Tech: ${p.tech.join(", ")}</div></div>`
-    )
-    .join("")}
-  <h2>Certifications &amp; Training</h2>
-  <ul>${certifications.map((c) => `<li><span class="t">${c.title}</span> — ${c.organization} (${c.status})</li>`).join("")}</ul>
-  <h2>Links</h2>
-  <ul><li>${profile.github}</li><li>${profile.linkedin}</li><li>${profile.email}</li></ul>
-  <p class="s">© 2026 ${profile.name} — Turning data into better decisions.</p>
-  </div></body></html>`;
-  window.open(URL.createObjectURL(new Blob([html], { type: "text/html" })), "_blank", "noopener,noreferrer");
+  const html = `
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Sajid Jamal — Resume</title>
+
+        <style>
+          @page {
+            size: A4;
+            margin: 12mm;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #373c42;
+            font-size: 11px;
+            line-height: 1.45;
+          }
+
+          h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #1e2b3c;
+          }
+
+          .role {
+            margin: 4px 0;
+            color: #1e2b3c;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+          }
+
+          .contact {
+            color: #696e74;
+            font-size: 9px;
+            margin-bottom: 8px;
+          }
+
+          .line {
+            border-bottom: 2px solid #1e2b3c;
+          }
+
+          h2 {
+            margin: 12px 0 5px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid #d7dade;
+            color: #1e2b3c;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+          }
+
+          p {
+            margin: 4px 0;
+          }
+
+          ul {
+            margin: 3px 0 7px;
+            padding-left: 17px;
+          }
+
+          li {
+            margin: 2px 0;
+          }
+
+          .project {
+            margin-bottom: 9px;
+          }
+
+          .project-title {
+            font-weight: bold;
+          }
+
+          .tech {
+            float: right;
+            color: #696e74;
+            font-size: 9px;
+          }
+
+          .education-title {
+            font-weight: bold;
+          }
+
+          .education-year {
+            float: right;
+            color: #1e2b3c;
+            font-weight: bold;
+            font-size: 9px;
+          }
+        </style>
+      </head>
+
+      <body>
+        <h1>SAJID JAMAL</h1>
+
+        <div class="role">
+          DATA ANALYTICS | DATA SCIENCE | AI / ML
+        </div>
+
+        <div class="contact">
+          sajidjamal212@gmail.com ·
+          www.linkedin.com/in/sajid-jamal-130462380 ·
+          www.github.com/Lone-sajid12 ·
+          Srinagar, Jammu & Kashmir, India
+        </div>
+
+        <div class="line"></div>
+
+        <h2>PROFESSIONAL SUMMARY</h2>
+
+        <p>
+          Computer Science student currently focused on Data Analytics and
+          working toward a career in Data Science. Hands-on experience with
+          Python, Pandas, NumPy, data cleaning and exploratory data analysis
+          through practical projects. Currently developing skills in SQL,
+          statistics and machine learning, with experience using AI-assisted
+          coding for development and debugging.
+        </p>
+
+        <h2>SKILLS</h2>
+
+        <p>
+          <b>Programming:</b> Python, JavaScript, C Programming
+          &nbsp;&nbsp;
+          <b>Data Analytics:</b> Pandas, NumPy, Data Cleaning,
+          Exploratory Data Analysis, Data Analysis, Data Interpretation,
+          Data Visualization
+        </p>
+
+        <p>
+          <b>SQL & Database:</b> SQL (Learning)
+          &nbsp;&nbsp;
+          <b>Machine Learning:</b> scikit-learn, Machine Learning (Learning)
+        </p>
+
+        <p>
+          <b>Tools:</b> Git, GitHub, Vercel, VS Code
+          &nbsp;&nbsp;
+          <b>Development (AI-Assisted):</b> React, Next.js, Vite,
+          Tailwind CSS, FastAPI, APIs
+        </p>
+
+        <p>
+          <b>Practical Skills:</b> Debugging & Troubleshooting,
+          Problem Solving, Technical Communication
+          &nbsp;&nbsp;
+          <b>AI & Development:</b> AI-assisted coding, Prompt Engineering,
+          AI Tools for Software Development, AI Automation (Learning),
+          AI Agent Concepts (Learning)
+        </p>
+
+        <h2>PROJECTS</h2>
+
+        <div class="project">
+          <div class="project-title">
+            Customer Churn Analytics
+            <span class="tech">
+              Python · Pandas · NumPy · Data Analysis
+            </span>
+          </div>
+
+          <ul>
+            <li>Cleaned and analyzed the Telco Customer Churn dataset using Python and Pandas.</li>
+            <li>Performed exploratory data analysis to understand customer churn patterns.</li>
+            <li>Analyzed churn by contract type, tenure, internet service and customer services.</li>
+            <li>Used data-driven analysis to identify differences in customer churn behavior.</li>
+            <li>GitHub: github.com/Lone-sajid12/customer-churn-analytics</li>
+          </ul>
+        </div>
+
+        <div class="project">
+          <div class="project-title">
+            Nexora Global — Business Website
+            <span class="tech">Website Development</span>
+          </div>
+
+          <ul>
+            <li>Worked on a responsive business website.</li>
+            <li>Worked on navigation, branding, mobile layout and website structure.</li>
+            <li>Used GitHub and Vercel for development and deployment.</li>
+            <li>Used AI-assisted coding and debugging during development.</li>
+          </ul>
+        </div>
+
+        <div class="project">
+          <div class="project-title">
+            Personal Portfolio
+            <span class="tech">
+              Next.js · React · Tailwind CSS
+            </span>
+          </div>
+
+          <ul>
+            <li>Built a personal developer portfolio.</li>
+            <li>Added project, certification and resume sections.</li>
+            <li>Worked with Next.js, React and Tailwind CSS.</li>
+            <li>Used AI-assisted coding and debugging during development.</li>
+          </ul>
+        </div>
+
+        <h2>CERTIFICATIONS</h2>
+
+        <ul>
+          <li>
+            <b>Career Essentials in Data Analysis by Microsoft and LinkedIn</b>
+            · LinkedIn Learning · Completed September 2026
+          </li>
+          <li>
+            <b>Statistics Foundations 1: The Basics</b>
+            · LinkedIn Learning
+          </li>
+          <li>
+            <b>Power BI Essentials</b>
+            · LinkedIn Learning
+          </li>
+          <li>
+            <b>Deloitte — Data Analytics Job Simulation</b>
+            · Forage
+          </li>
+        </ul>
+
+        <h2>EDUCATION</h2>
+
+        <div>
+          <span class="education-title">COMPUTER APPLICATIONS</span>
+          <span class="education-year">CURRENTLY IN 2ND YEAR</span>
+        </div>
+
+        <div>
+          Bachelor's Degree with Major in Computer Applications
+        </div>
+
+        <div>
+          IITM Hyderpora, Srinagar, Jammu & Kashmir
+        </div>
+
+        <h2>CAREER FOCUS</h2>
+
+        <p>
+          Data Analytics · Data Science · Machine Learning · Artificial Intelligence ·
+          Data-driven problem solving
+        </p>
+      </body>
+    </html>
+  `;
+
+  window.open(
+    URL.createObjectURL(
+      new Blob([html], { type: "text/html" })
+    ),
+    "_blank",
+    "noopener,noreferrer"
+  );
 }
+
+
+// =============================================================
+// DOWNLOAD RESUME
+// =============================================================
 
 export function downloadResume() {
   try {
@@ -250,10 +772,21 @@ export function downloadResume() {
   }
 }
 
+
+// =============================================================
+// VIEW RESUME
+// =============================================================
+
 export function viewResume() {
   try {
     const url = buildResumeDoc().output("bloburl");
-    window.open(url as unknown as string, "_blank", "noopener,noreferrer");
+
+    window.open(
+      url as unknown as string,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
     return true;
   } catch {
     openPrintableFallback();

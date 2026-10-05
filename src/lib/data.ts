@@ -20,7 +20,7 @@ export const profile = {
    * the site is hosted at a domain root or inside a sub-directory.
    * Add your photo at public/mypic.png and (optionally) public/resume.pdf.
    */
-  photo: "mypic.png",
+  photo: "mypic.jpeg",
   resume: "resume.pdf",
   education: {
     degree: "Undergraduate Programme in Computer Applications Major: Computer Applications | Minor: Applied Computing",
@@ -388,45 +388,119 @@ export const projects: Project[] = [
   },
 ];
 
-export type Certification = {
-  title: string;
-  organization: string;
-  category: "Data" | "Programming" | "AI/ML" | "Other";
-  status: "Completed" | "In progress";
-  date: string;
-  skills: string[];
-  /** Leave undefined until a real verification link exists — do not invent one. */
-  verifyUrl?: string;
-  note?: string;
-};
+export const certifications = [
+  {
+    title: "Career Essentials in Data Analysis",
+    organization: "Microsoft & LinkedIn",
+    category: ["Data"],
+    status: "Completed",
+    date: "September 2026",
+    skills: [
+      "Data Analysis",
+      "Data Analytics",
+      "Data Interpretation",
+      "Data Visualization",
+    ],
 
-export const certifications: Certification[] = [
+    // Your LinkedIn certificate link
+    verifyUrl: "https://www.linkedin.com/learning/certificates/8de82dd4d4d2d622b01b075cc4119d0621c2c938acaceebdd28cfd3465e79876?trk=share_certificate",
+
+    imageUrl: "",
+    note: "Career Essentials in Data Analysis by Microsoft and LinkedIn.",
+  },
+
+  {
+    title: "Statistics Foundations 1: The Basics",
+    organization: "LinkedIn Learning",
+    category: ["Data"],
+    status: "Completed",
+    date: "",
+    skills: [
+      "Statistics",
+      "Statistical Concepts",
+      "Data Analysis",
+    ],
+
+    // Your LinkedIn certificate link
+    verifyUrl: "https://www.linkedin.com/learning/certificates/fd9d5724ffc982a78e0753810c9cf1b6244b9137ae749124c797ca0eb6983fb7?trk=share_certificate",
+
+    imageUrl: "",
+    note: "",
+  },
+
+  {
+    title: "Power BI Essentials",
+    organization: "LinkedIn Learning",
+    category: ["Data"],
+    status: "Completed",
+    date: "",
+    skills: [
+      "Power BI",
+      "Data Visualization",
+      "Data Analysis",
+    ],
+
+    // Your LinkedIn certificate link
+    verifyUrl: "https://www.linkedin.com/learning/certificates/a6389490f734ff788101d776ed7583832134952a5f43a4968fc0531ce8c537a2?trk=share_certificate",
+
+    imageUrl: "",
+    note: "",
+  },
+
+  {
+    title: "Deloitte — Data Analytics Job Simulation",
+    organization: "Forage",
+    category: ["Data"],
+    status: "Completed",
+    date: "",
+    skills: [
+      "Data Analysis",
+      "Data Interpretation",
+      "Business Analytics",
+    ],
+
+    // You'll add the certificate image
+    verifyUrl: "",
+    imageUrl: "/certificates/deloitte-data-analytics.png",
+
+    note: "",
+  },
+
   {
     title: "C Programming Fundamentals",
     organization: "Udemy",
-    category: "Programming",
+    category: ["Programming"],
     status: "Completed",
-    date: "Add completion date",
-    skills: ["C syntax", "Control flow", "Functions", "Arrays", "Pointers basics"],
-    note: "Certificate file to be attached — add the PDF or image and its verification link in src/lib/data.ts when available.",
+    date: "",
+    skills: [
+      "C Programming",
+      "Programming Fundamentals",
+      "Problem Solving",
+    ],
+
+    verifyUrl: "",
+    imageUrl: "/certificates/c-programming-fundamentals.jpg",
+
+    note: "",
   },
+
   {
-    title: "Python for AI & ML — Training",
-    organization: "Kashmir Education Initiative in collaboration with IITM",
-    category: "AI/ML",
-    status: "In progress",
-    date: "Ongoing",
-    skills: ["Python", "NumPy", "Pandas", "Intro to ML", "Data handling"],
-    note: "Organised by Kashmir Education Initiative in collaboration with IIT Madras. Certificate to be attached at completion.",
-  },
-  {
-    title: "Deloitte Data Analytics Job Simulation",
-    organization: "Forage",
-    category: "Data",
+    title: "Python for AI & ML",
+    organization: "Udemy",
+    category: ["Programming", "AI/ML"],
     status: "Completed",
-    date: "Certificate date to be added",
-    skills: ["Data analysis", "Forensic technology", "Dashboarding", "Business insight"],
-    note: "Forage job simulation. Verification link to be added from the certificate page once published.",
+    date: "",
+    skills: [
+      "Python",
+      "AI",
+      "Machine Learning",
+      "Programming",
+    ],
+
+    verifyUrl: "",
+    imageUrl: "/certificates/python-ai-ml.jpg",
+
+    note: "",
   },
 ];
 
